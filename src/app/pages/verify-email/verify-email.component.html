@@ -1,0 +1,17 @@
+<div class="container text-center mt-5">
+  <h2 *ngIf="verifying">E-posta doğrulanıyor...</h2>
+
+  <div *ngIf="!verifying">
+    <div *ngIf="success" class="alert alert-success">
+      {{ message }}
+    </div>
+
+    <div *ngIf="!success" class="alert alert-danger">
+      {{ message }}
+    </div>
+
+    <button *ngIf="!verifying" class="btn btn-primary mt-3" (click)="router.navigate(['/login'])">
+      Giriş Sayfasına Dön
+    </button>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 sütun yan yana */
+    gap: 12px;
+
+    mat-form-field {
+      width: 100%;
+      max-width: 217px; /* her bir filtre alanı maksimum 200px genişlikte */
+      min-width: 120px; /* çok daralmasını önlemek için */
+    }
+  }
+
+  .clear-filter-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+  }
+}
+
+/* Ekran küçüldüğünde responsive */
+@media (max-width: 900px) {
+  .filter-section .filter-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filter-section .filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}

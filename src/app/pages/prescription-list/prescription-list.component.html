@@ -1,0 +1,84 @@
+<div class="container mt-3">
+  <h3>💊 Reçete Listesi</h3>
+
+  <div *ngIf="loading" class="text-center my-4">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && dataSource.data.length === 0" class="alert alert-info">
+    Henüz reçete bulunmamaktadır.
+  </div>
+
+  <div *ngIf="!loading && dataSource.data.length > 0">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
+
+      <!-- E-Reçete Kodu -->
+      <ng-container matColumnDef="prescriptionCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Reçete Kodu</th>
+        <td mat-cell *matCellDef="let p">{{ p.prescriptionCode }}</td>
+      </ng-container>
+
+      <!-- Hasta -->
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Hasta</th>
+        <td mat-cell *matCellDef="let p">{{ p.patientName }}</td>
+      </ng-container>
+
+      <!-- Doktor -->
+      <ng-container matColumnDef="doctorName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Doktor</th>
+        <td mat-cell *matCellDef="let p">{{ p.doctorName }}</td>
+      </ng-container>
+
+      <!-- Medical Record -->
+      <ng-container matColumnDef="medicalRecordId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Medical Record</th>
+        <td mat-cell *matCellDef="let p">{{ p.medicalRecordId || '—' }}</td>
+      </ng-container>
+
+      <!-- İlaç -->
+      <ng-container matColumnDef="medication">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>İlaç</th>
+        <td mat-cell *matCellDef="let p">{{ p.medication }}</td>
+      </ng-container>
+
+      <!-- Dozaj -->
+      <ng-container matColumnDef="dosage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Dozaj</th>
+        <td mat-cell *matCellDef="let p">{{ p.dosage }}</td>
+      </ng-container>
+
+      <!-- Talimatlar -->
+      <ng-container matColumnDef="instructions">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Talimatlar</th>
+        <td mat-cell *matCellDef="let p">{{ p.instructions }}</td>
+      </ng-container>
+
+      <!-- Oluşturulma Tarihi -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Oluşturulma</th>
+        <td mat-cell *matCellDef="let p">{{ p.createdAt | date:'short' }}</td>
+      </ng-container>
+
+      <!-- Güncellenme Tarihi -->
+      <ng-container matColumnDef="updatedAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Güncellenme</th>
+        <td mat-cell *matCellDef="let p">{{ p.updatedAt | date:'short' }}</td>
+      </ng-container>
+
+      <!-- İşlemler (Sadece Doctor ve Admin) -->
+      <ng-container matColumnDef="actions" *ngIf="role === 'DOCTOR' || role === 'ADMIN'">
+        <th mat-header-cell *matHeaderCellDef>İşlem</th>
+        <td mat-cell *matCellDef="let p">
+          <button mat-mini-fab color="primary" aria-label="Edit" (click)="editPrescription(p.id)">✏️</button>
+          <button mat-mini-fab color="warn" aria-label="Delete" (click)="deletePrescription(p.id)">🗑️</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsWithActions"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsWithActions;"></tr>
+    </table>
+
+    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  </div>
+</div>

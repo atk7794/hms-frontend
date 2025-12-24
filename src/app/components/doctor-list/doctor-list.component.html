@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <h2>👨‍⚕️ Doktor Listesi</h2>
+
+  <div *ngIf="loading">Yükleniyor...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <table *ngIf="!loading && doctors.length > 0" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>Uzmanlık</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let doctor of doctors">
+        <td>{{ doctor.id }}</td>
+        <td>{{ doctor.firstName }}</td>
+        <td>{{ doctor.lastName }}</td>
+        <td>{{ doctor.specialty }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" (click)="editDoctor(doctor)">Güncelle</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteDoctor(doctor.id)">Sil</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && doctors.length === 0">Hiç doktor bulunamadı.</p>
+
+  <!-- Form componenti burada -->
+  <app-doctor-form
+    *ngIf="selectedDoctor !== null"
+    [doctor]="selectedDoctor"
+    (doctorUpdated)="onDoctorUpdated()">
+  </app-doctor-form>
+</div>
