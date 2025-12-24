@@ -1,27 +1,160 @@
-# Frontend
+# Hospital Management System – Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+A modern and role-based **Hospital Management System frontend** built with **Angular** and **Tailwind CSS**, designed to work seamlessly with a Spring Boot REST API backend.
 
-## Development server
+This application provides separate dashboards and features for **Admin**, **Doctor**, and **Patient** roles, with secure authentication, authorization guards, and real-world hospital workflows.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## 🏥 Project Overview
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The Hospital Management System (HMS) is a full-stack web application that enables hospitals or clinics to manage:
 
-## Build
+- Patients and doctors
+- Appointments
+- Medical records
+- Prescriptions
+- User activity & audit logs
+- Email notifications
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This repository contains the **frontend (Angular)** part of the system.
 
-## Running unit tests
+👉 Backend repository: **Spring Boot + PostgreSQL**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## 🚀 Features
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 🔐 Authentication & Authorization
+- JWT-based authentication
+- Role-based access control (Admin / Doctor / Patient)
+- Angular Route Guards
+- HTTP Interceptor for token handling
 
-## Further help
+### 🧑‍⚕️ Role-Based Dashboards
+- **Admin Dashboard**
+  - Manage doctors & patients
+  - View system activity logs
+  - Monitor user actions
+- **Doctor Dashboard**
+  - View appointments
+  - Manage medical records
+  - Create prescriptions
+- **Patient Dashboard**
+  - Book appointments
+  - View medical history
+  - Access prescriptions
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### 📊 System Logs
+- User activity tracking
+- Email log listing
+- Action history for audit purposes
+
+### 🎨 UI & UX
+- Responsive design with Tailwind CSS
+- Clean and modern dashboard layout
+- Reusable Angular components
+- Form validation and user-friendly feedback
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- Angular 16
+- TypeScript
+- Tailwind CSS
+- RxJS
+- Angular Router
+- HTTP Client
+
+### Backend (separate repository)
+- Spring Boot
+- Spring Security + JWT
+- PostgreSQL
+- JPA / Hibernate
+- Docker
+
+---
+
+## 📁 Project Structure (Simplified)
+
+```text
+src/
+ ├── app/
+ │   ├── components/      # Reusable UI components
+ │   ├── pages/           # Page-level components
+ │   ├── services/        # API communication
+ │   ├── models/          # Interfaces & DTOs
+ │   ├── guards/          # Auth & role guards
+ │   ├── interceptors/    # JWT interceptor
+ │   └── app.routes.ts
+ └── environments/
+```
+
+---
+
+## ⚙️ Environment Configuration
+
+Create the following environment files:
+
+### environment.ts
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api'
+};
+```
+
+### environment.prod.ts
+```ts
+export const environment = {
+  production: true,
+  apiUrl: 'BACKEND_PRODUCTION_URL'
+};
+```
+
+---
+
+## ▶️ Running the Project Locally
+- npm install
+- ng serve
+
+---
+
+## Navigate to:
+👉 http://localhost:4200
+
+---
+
+## 🔗 Deployment
+
+- Frontend: Vercel (planned / in progress)
+- Backend: Render / Docker-based deployment
+- Database: PostgreSQL
+
+Live demo links will be added after deployment.
+
+---
+
+## 🎯 Purpose of This Project
+
+This project was developed to demonstrate:
+
+- Real-world full-stack architecture
+- Secure authentication & authorization
+- Clean Angular project structure
+- Scalable and maintainable frontend design
+- Enterprise-style backend–frontend integration
+
+---
+
+## 👨‍💻 Author
+
+**Tuncay Köse**  
+Computer Engineer  
+GitHub: https://github.com/atk7794
+
+---
+
+📌 This project is actively maintained and open for further improvements.
