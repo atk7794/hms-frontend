@@ -1,0 +1,60 @@
+<div class="container mt-3">
+  <h3>{{ editMode ? 'Reçeteyi Güncelle' : 'Yeni Reçete Oluştur' }}</h3>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <!-- E-Reçete Kodu -->
+    <div class="mb-3">
+      <label>E-Reçete Kodu</label>
+      <input type="text" formControlName="prescriptionCode" class="form-control" readonly>
+    </div>
+
+    <!-- Doktor seçimi -->
+    <div class="mb-3">
+      <label>Doktor</label>
+
+      <!-- Admin: dropdown ile seçebilsin -->
+      <select *ngIf="role === 'ADMIN'" formControlName="doctorId" class="form-select">
+        <option value="">Seçiniz...</option>
+        <option *ngFor="let d of doctors" [value]="d.id">{{ d.firstName }} {{ d.lastName }}</option>
+      </select>
+
+      <!-- Doktor: kendi adı gösterilsin, seçim yok -->
+      <input *ngIf="role === 'DOCTOR'" type="text" class="form-control" [value]="doctorName" readonly>
+    </div>
+
+    <!-- Hasta seçimi (Admin + Doktor) -->
+    <div *ngIf="role === 'ADMIN' || role === 'DOCTOR'" class="mb-3">
+      <label>Hasta</label>
+      <select formControlName="patientId" class="form-select" required>
+        <option value="">Seçiniz...</option>
+        <option *ngFor="let p of patients" [value]="p.id">{{ p.firstName }} {{ p.lastName }}</option>
+      </select>
+    </div>
+
+    <!-- Opsiyonel MedicalRecord -->
+    <div class="mb-3">
+      <label>Medical Record (opsiyonel)</label>
+      <input type="number" formControlName="medicalRecordId" class="form-control" placeholder="ID giriniz">
+    </div>
+
+    <!-- İlaç -->
+    <div class="mb-3">
+      <label>İlaç</label>
+      <input type="text" formControlName="medication" class="form-control" required>
+    </div>
+
+    <!-- Dozaj -->
+    <div class="mb-3">
+      <label>Dozaj</label>
+      <input type="text" formControlName="dosage" class="form-control" required>
+    </div>
+
+    <!-- Talimatlar -->
+    <div class="mb-3">
+      <label>Talimatlar</label>
+      <textarea formControlName="instructions" class="form-control" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ editMode ? 'Güncelle' : 'Oluştur' }}</button>
+  </form>
+</div>

@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <h2>Oturum Aç</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Email</label>
+      <input class="form-control" formControlName="email" type="email" />
+    </div>
+    <div class="mb-3">
+      <label>Şifre</label>
+      <input class="form-control" formControlName="password" type="password" />
+    </div>
+    <button class="btn btn-success" type="submit">Giriş Yap</button>
+    <div class="text-end mt-2">
+      <a routerLink="/forgot-password">Şifremi Unuttum?</a>
+    </div>
+  </form>
+
+  <div *ngIf="error" class="alert alert-danger mt-3">
+    {{ error }}
+  </div>
+
+  <div *ngIf="error?.includes('doğrulanmamış')" class="text-center mt-2">
+    <button class="btn btn-link" (click)="resendVerification()">Doğrulama E-postasını Tekrar Gönder</button>
+  </div>
+  
+</div>
+

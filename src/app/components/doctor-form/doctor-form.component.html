@@ -1,0 +1,31 @@
+<div class="doctor-form-container mt-4">
+  <h3>{{ doctor ? '👨‍⚕️ Doktor Güncelle' : '➕ Yeni Doktor Ekle' }}</h3>
+
+  <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+    <div class="form-group mb-2">
+      <input type="text" formControlName="firstName" placeholder="Ad" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+      <input type="text" formControlName="lastName" placeholder="Soyad" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+      <input type="text" formControlName="specialty" placeholder="Uzmanlık Alanı" class="form-control" />
+    </div>
+
+    <div> <!-- yerine <div *ngIf="!doctor">-->
+      <div class="form-group mb-2">
+        <input type="email" formControlName="email" placeholder="E-posta" class="form-control" />
+      </div>
+
+      <div class="form-group mb-2">
+        <input type="password" formControlName="password" placeholder="Şifre" class="form-control" />
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-2">
+      {{ doctor ? 'Güncelle' : 'Ekle' }}
+    </button>
+  </form>
+</div>

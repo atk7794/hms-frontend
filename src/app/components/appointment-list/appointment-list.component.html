@@ -1,0 +1,48 @@
+<div class="container mt-4">
+  <h2>📅 Randevu Listesi</h2>
+
+  <div *ngIf="loading">Yükleniyor...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <table *ngIf="!loading && appointments.length > 0" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Hasta Adı</th>
+        <th>Doktor Adı</th>
+        <th>Tarih</th>
+        <th>Durum</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let appointment of appointments">
+        <td>{{ appointment.id }}</td>
+        <td>{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</td>
+        <td>{{ appointment.doctor.firstName }} {{ appointment.doctor.lastName }}</td>
+        <td>{{ appointment.appointmentDate | date:'short' }}</td>
+        <td>{{ appointment.status }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" (click)="editAppointment(appointment)">Güncelle</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteAppointment(appointment.id)">Sil</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && appointments.length === 0">Hiç randevu bulunamadı.</p>
+
+  <app-appointment-form
+    *ngIf="selectedAppointment"
+    [appointment]="selectedAppointment"
+    (formSubmitted)="onFormSubmit()"
+    (cancelForm)="selectedAppointment = undefined">
+  </app-appointment-form>
+
+</div>
+
+
+
+
+
+

@@ -1,0 +1,93 @@
+<div class="container mt-3">
+  <h3>🩺 Tıbbi Kayıtlar</h3>
+
+  <div class="filter-section mb-3 d-flex flex-wrap gap-2 align-items-end">
+    <mat-form-field appearance="outline">
+      <mat-label>Kullanıcı Ara</mat-label>
+      <input matInput [(ngModel)]="filterPatient" (input)="applyFilter()" placeholder="Hasta adı veya soyadı" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Doktor Ara</mat-label>
+      <input matInput [(ngModel)]="filterDoctor" (input)="applyFilter()" placeholder="Doktor adı veya soyadı" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Başlangıç Tarihi</mat-label>
+      <input matInput [matDatepicker]="startPicker" [(ngModel)]="filterStartDate" (dateChange)="applyFilter()" />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Bitiş Tarihi</mat-label>
+      <input matInput [matDatepicker]="endPicker" [(ngModel)]="filterEndDate" (dateChange)="applyFilter()" />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-stroked-button color="warn" (click)="clearFilters()">Filtreleri Temizle</button>
+  </div>
+
+  <div *ngIf="loading" class="mb-2">Yükleniyor...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && dataSource.data.length > 0">
+    <table mat-table [dataSource]="dataSource" matSort class="w-100 mat-elevation-z8">
+
+      <!-- index -->
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let row; let i = index">{{ i + 1 }}</td>
+      </ng-container>
+
+      <!-- patient -->
+      <ng-container matColumnDef="patient">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Hasta</th>
+        <td mat-cell *matCellDef="let r">{{ formatName(r.patient.firstName, r.patient.lastName) }}</td>
+      </ng-container>
+
+      <!-- doctor -->
+      <ng-container matColumnDef="doctor">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Doktor</th>
+        <td mat-cell *matCellDef="let r">{{ formatName(r.doctor.firstName, r.doctor.lastName) }}</td>
+      </ng-container>
+
+      <!-- diagnosis -->
+      <ng-container matColumnDef="diagnosis">
+        <th mat-header-cell *matHeaderCellDef>Tanı</th>
+        <td mat-cell *matCellDef="let r">{{ r.diagnosis }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tarih</th>
+        <td mat-cell *matCellDef="let r">{{ r.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>İşlemler</th>
+        <td mat-cell *matCellDef="let r">
+          <!-- Görüntüle / Düzenle / Sil (rol kontrolü ekle) -->
+          <button mat-icon-button title="Görüntüle" (click)="onView(r)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button title="Düzenle" (click)="onEdit(r)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteRecord(r.id)" title="Sil">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <div *ngIf="!loading && dataSource.data.length === 0" class="mt-2">
+    Henüz kayıt yok.
+  </div>
+</div>

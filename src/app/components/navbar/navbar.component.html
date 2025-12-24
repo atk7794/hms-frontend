@@ -1,0 +1,47 @@
+<nav
+  class="navbar navbar-expand-lg navbar-dark p-3"
+  [ngClass]="{
+    'bg-success': userRole === 'PATIENT',
+    'bg-primary': userRole === 'DOCTOR',
+    'bg-dark': userRole === 'ADMIN',
+    'bg-secondary': !userRole
+  }"
+>
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" routerLink="/">🏥 HMS</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- 🔹 Giriş yapmamış kullanıcı -->
+        <li class="nav-item" *ngIf="!userEmail">
+          <a class="nav-link text-white fw-semibold" routerLink="/login">🔑 Giriş Yap</a>
+        </li>
+
+        <!-- 🔹 Giriş yapmış kullanıcı -->
+        <li class="nav-item dropdown" *ngIf="userEmail">
+          <a
+            class="nav-link dropdown-toggle fw-semibold"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ userEmail }} ({{ userRole }})
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+            <li>
+              <button class="dropdown-item" (click)="goToDashboard()">📊 Dashboard</button>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <button class="dropdown-item text-danger fw-semibold" (click)="logout()">🚪 Çıkış Yap</button>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

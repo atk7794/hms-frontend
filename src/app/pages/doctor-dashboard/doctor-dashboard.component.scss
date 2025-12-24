@@ -1,0 +1,15 @@
+/* Durum renkleri */
+.status-scheduled {
+  color: #0d6efd; // mavi
+  font-weight: bold;
+}
+
+.status-completed {
+  color: #198754; // yeşil
+  font-weight: bold;
+}
+
+.status-canceled {
+  color: #dc3545; // kırmızı
+  font-weight: bold;
+}

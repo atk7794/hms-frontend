@@ -1,0 +1,72 @@
+<div class="card p-3 mb-3">
+  <h5>{{ appointment ? 'Randevu Güncelle' : 'Yeni Randevu Ekle' }}</h5>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+
+    <!-- Hasta seçimi sadece admin ve doktor için -->
+    <div class="mb-2" *ngIf="currentUserRole === 'ADMIN' || currentUserRole === 'DOCTOR'">
+      <label>Hasta:</label>
+      <select class="form-select" formControlName="patientId" required>
+        <option value="">Seçiniz</option>
+        <option *ngFor="let patient of patients" [value]="patient.id">
+          {{ patient.firstName }} {{ patient.lastName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Speciality seçimi -->
+    <div class="mb-2" *ngIf="currentUserRole !== 'DOCTOR'">
+      <label>Bölüm:</label>
+      <select class="form-select" formControlName="speciality" (change)="onSpecialityChange()">
+        <option value="">Seçiniz</option>
+        <option *ngFor="let s of specialities" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <!-- Doktor seçimi -->
+    <div class="mb-2" *ngIf="currentUserRole !== 'DOCTOR'">
+      <label>Doktor:</label>
+      <select class="form-select" formControlName="doctorId">
+        <option value="">Seçiniz</option>
+        <option *ngFor="let doctor of doctors" [value]="doctor.id">
+          {{ doctor.firstName }} {{ doctor.lastName }}
+        </option>
+      </select>
+    </div>
+
+
+    <!-- Doktor dashboard: speciality + doctor readonly -->
+    <div *ngIf="currentUserRole === 'DOCTOR'">
+      <div class="mb-2">
+        <label>Bölüm:</label>
+        <input type="text" class="form-control" [value]="doctorSpeciality" readonly />
+      </div>
+
+      <div class="mb-2">
+        <label>Doktor:</label>
+        <input type="text" class="form-control"
+               [value]="doctorFullName"
+               readonly />
+      </div>
+    </div>
+
+    <!-- Tarih -->
+    <div class="mb-2">
+      <label>Tarih:</label>
+      <input type="datetime-local" class="form-control" formControlName="appointmentDate" />
+    </div>
+
+    <!-- Durum -->
+    <div class="mb-2">
+      <label>Durum:</label>
+      <select class="form-select" formControlName="status">
+        <option value="Scheduled">Scheduled</option>
+        <option value="Completed">Completed</option>
+        <option value="Canceled">Canceled</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2">{{ appointment ? 'Güncelle' : 'Ekle' }}</button>
+    <button type="button" class="btn btn-secondary" (click)="onCancel()">İptal</button>
+
+  </form>
+</div>

@@ -1,0 +1,135 @@
+<div class="container mt-4">
+  <h2 class="mb-3 text-center">🗂️ Yönetici Paneli</h2>
+
+  <!-- Sekmeler -->
+  <ul class="nav nav-tabs justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'patients'" (click)="setTab('patients')">🧍 Hastalar</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'doctors'" (click)="setTab('doctors')">👨‍⚕️ Doktorlar</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">📅 Randevular</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'emails'" (click)="setTab('emails')">📨 Mail Geçmişi</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'activityLogs'" (click)="setTab('activityLogs')">📊 Kullanıcı I/O Logları</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'medicalRecords'" (click)="setTab('medicalRecords')">🩺 Medical Records</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'prescriptions'" (click)="setTab('prescriptions')">💊 Reçeteler</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'actionLogs'" (click)="setTab('actionLogs')">📈 Kullanıcı İşlem Logları</a>
+    </li>
+  </ul>
+
+  <!-- İçerik Alanı -->
+  <div class="card mt-4 p-3 shadow-sm">
+
+    <!-- 🧍 HASTALAR -->
+    <div *ngIf="activeTab === 'patients'">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Hasta Yönetimi</h4>
+        <button class="btn btn-success btn-sm" (click)="toggleForm()">
+          {{ showAddForm ? 'Listeye Dön' : '➕ Yeni Hasta' }}
+        </button>
+      </div>
+      <app-patient-form *ngIf="showAddForm"></app-patient-form>
+      <app-patient-list *ngIf="!showAddForm"></app-patient-list>
+    </div>
+
+    <!-- 👨‍⚕️ DOKTORLAR -->
+    <div *ngIf="activeTab === 'doctors'">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Doktor Yönetimi</h4>
+        <button class="btn btn-success btn-sm" (click)="toggleForm()">
+          {{ showAddForm ? 'Listeye Dön' : '➕ Yeni Doktor' }}
+        </button>
+      </div>
+      <app-doctor-form *ngIf="showAddForm"></app-doctor-form>
+      <app-doctor-list *ngIf="!showAddForm"></app-doctor-list>
+    </div>
+
+    <!-- 📅 RANDEVULAR -->
+    <div *ngIf="activeTab === 'appointments'">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Randevu Yönetimi</h4>
+        <button class="btn btn-success btn-sm" (click)="toggleForm()">
+          {{ showAddForm ? 'Listeye Dön' : '➕ Yeni Randevu' }}
+        </button>
+      </div>
+      <app-appointment-form *ngIf="showAddForm"></app-appointment-form>
+      <app-appointment-list *ngIf="!showAddForm"></app-appointment-list>
+    </div>
+
+    <!-- 📨 MAİL GEÇMİŞİ -->
+    <div *ngIf="activeTab === 'emails'">
+      <h4 class="mb-3">📨 Gönderilen E-Postalar</h4>
+      <app-email-log-list></app-email-log-list>
+    </div>
+
+    <!-- ACTIVITY LOG LİSTESİ-->
+    <div *ngIf="activeTab === 'activityLogs'">
+      <app-user-activity-log-list></app-user-activity-log-list>
+    </div>
+
+  <!-- 🩺 MEDICAL RECORDS -->
+  <div *ngIf="activeTab === 'medicalRecords'">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Medical Record Yönetimi</h4>
+      <button class="btn btn-success btn-sm" (click)="toggleForm()">
+        {{ showAddForm ? 'Listeye Dön' : '➕ Yeni Medical Record' }}
+      </button>
+    </div>
+
+    <app-medical-record-form
+      *ngIf="showAddForm"
+      [record]="selectedRecord"
+      [viewMode]="viewMode"
+      (saved)="onRecordSaved()"
+    ></app-medical-record-form>
+
+    <app-medical-record-list
+      *ngIf="!showAddForm"
+      (editRecord)="onEditRecord($event)"
+      (viewRecord)="onViewRecord($event)"
+    ></app-medical-record-list>
+  </div>
+
+
+  <!-- Reçeteler -->
+  <div *ngIf="activeTab === 'prescriptions'">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Reçete Yönetimi</h4>
+      <button class="btn btn-success btn-sm" (click)="toggleForm()">
+        {{ showAddForm ? 'Listeye Dön' : '➕ Yeni Reçete' }}
+      </button>
+    </div>
+    <app-prescription-form
+      *ngIf="showAddForm"
+      [record]="selectedRecord"
+      [viewMode]="viewMode"
+      (saved)="onRecordSaved()">
+    </app-prescription-form>
+
+    <app-prescription-list
+      *ngIf="!showAddForm"
+      [role]="'ADMIN'"
+      (editRecord)="onEditRecord($event)"
+      (viewRecord)="onViewRecord($event)">
+    </app-prescription-list>
+  </div>
+
+  <!-- User Action Logs -->
+  <div *ngIf="activeTab === 'actionLogs'">
+    <app-user-action-log-list></app-user-action-log-list>
+  </div>
+
+  </div>
+</div>

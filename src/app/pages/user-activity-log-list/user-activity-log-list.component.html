@@ -1,0 +1,93 @@
+<div class="container mt-4">
+  <h2 class="mb-3">📝 Kullanıcı Aktivite Logları</h2>
+
+  <!-- Filtreleme -->
+  <div class="filter-section mb-4">
+    <div class="filter-row d-flex flex-wrap align-items-center gap-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Kullanıcı Ara</mat-label>
+        <input matInput placeholder="Kullanıcı adı" [(ngModel)]="filterUsername" (input)="applyFilter()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>IP Adresi Ara</mat-label>
+        <input matInput placeholder="IP adresi" [(ngModel)]="filterIp" (input)="applyFilter()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Başlangıç Tarihi</mat-label>
+        <input matInput [matDatepicker]="startPicker" [(ngModel)]="filterStartDate" (dateChange)="applyFilter()" />
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Bitiş Tarihi</mat-label>
+        <input matInput [matDatepicker]="endPicker" [(ngModel)]="filterEndDate" (dateChange)="applyFilter()" />
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="clear-filter-row mt-2">
+      <button mat-raised-button color="warn" (click)="clearFilters()">
+        <mat-icon>clear_all</mat-icon> Filtreleri Temizle
+      </button>
+    </div>
+  </div>
+
+  <!-- Tablo -->
+  <div *ngIf="loading" class="alert alert-info">Yükleniyor...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && logs.length > 0">
+    <table mat-table [dataSource]="filteredLogs" matSort class="mat-elevation-z8 w-100">
+
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let log; let i = index">{{ i + 1 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Kullanıcı</th>
+        <td mat-cell *matCellDef="let log">{{ log.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ipAddress">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>IP Adresi</th>
+        <td mat-cell *matCellDef="let log">{{ log.ipAddress }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="loginAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Giriş Saati</th>
+        <td mat-cell *matCellDef="let log">{{ log.loginAt | date:'dd.MM.yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="logoutAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Çıkış Saati</th>
+        <td mat-cell *matCellDef="let log">{{ log.logoutAt ? (log.logoutAt | date:'dd.MM.yyyy HH:mm') : '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Oturum Süresi</th>
+        <td mat-cell *matCellDef="let log">
+          <ng-container *ngIf="log.logoutAt; else active">
+            {{ log.durationFormatted }}
+          </ng-container>
+          <ng-template #active>
+            <span class="badge badge-success">🟢 Aktif: {{ log.durationFormatted }}</span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <div *ngIf="!loading && logs.length === 0" class="alert alert-secondary">
+    Henüz kullanıcı log kaydı yok.
+  </div>
+</div>

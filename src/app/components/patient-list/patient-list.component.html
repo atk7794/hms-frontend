@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h2>👩‍⚕️ Hasta Listesi</h2>
+
+  <div *ngIf="loading">Yükleniyor...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <table *ngIf="!loading && patients.length > 0" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>Doğum Tarihi</th>
+        <th>Cinsiyet</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let patient of patients">
+        <td>{{ patient.id }}</td>
+        <td>{{ patient.firstName }}</td>
+        <td>{{ patient.lastName }}</td>
+        <td>{{ patient.birthDate | date }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>
+          <button (click)="editPatient(patient)" class="btn btn-sm btn-primary">Güncelle</button>
+          <button (click)="deletePatient(patient.id)" class="btn btn-danger btn-sm">Sil</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && patients.length === 0">Hiç hasta bulunamadı.</p>
+
+  <!-- Form component -->
+  <app-patient-form
+    *ngIf="selectedPatient"
+    [patient]="selectedPatient"
+    (formSubmitted)="onFormSubmitted()">
+  </app-patient-form>
+</div>

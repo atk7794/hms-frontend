@@ -1,0 +1,216 @@
+<div class="container mt-4">
+  <h2>👨‍⚕️ Doktor Paneli</h2>
+
+  <!-- Sekmeler -->
+  <ul class="nav nav-tabs justify-content-center mt-3">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">📅 Randevular</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'patients'" (click)="setTab('patients')">🧍 Hastalar</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'medicalRecords'" (click)="setTab('medicalRecords')">🩺 Medical Records</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'prescriptions'" (click)="setTab('prescriptions')">💊 Reçeteler</a>
+    </li>
+  </ul>
+
+
+  <div class="card mt-4 p-3 shadow-sm">
+
+    <!-- RANDEVULAR SEKMESI -->
+    <div *ngIf="activeTab === 'appointments'">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Randevu Yönetimi</h4>
+        <button class="btn btn-success btn-sm" (click)="openAppointmentForm()">
+          {{ showAppointmentForm ? 'Listeye Dön' : '➕ Yeni Randevu' }}
+        </button>
+      </div>
+
+      <!-- Arama ve filtre -->
+      <div class="row mb-2" *ngIf="!showAppointmentForm">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Hasta adı ara..." [(ngModel)]="searchText" (ngModelChange)="applyFilters()">
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="applyFilters()">
+            <option value="">Tüm Durumlar</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Completed">Completed</option>
+            <option value="Canceled">Canceled</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <app-appointment-form
+        *ngIf="showAppointmentForm"
+        [appointment]="selectedAppointment"
+        [doctorId]="doctorId"
+        (formSubmitted)="onAppointmentSubmitted()"
+        (cancelForm)="closeAppointmentForm()">
+      </app-appointment-form>
+
+      <!-- Tablo -->
+      <table class="table table-striped mt-3" *ngIf="!showAppointmentForm && filteredAppointments.length > 0">
+        <thead>
+          <tr>
+            <th (click)="sortAppointments('patient')" style="cursor:pointer">
+              Hasta
+              <span [ngClass]="{
+                    'text-dark': sortField === 'patient' && sortDirection === 'asc',
+                    'text-muted': sortField !== 'patient' || sortDirection !== 'asc'
+                  }">▲</span>
+              <span [ngClass]="{
+                    'text-dark': sortField === 'patient' && sortDirection === 'desc',
+                    'text-muted': sortField !== 'patient' || sortDirection !== 'desc'
+                  }">▼</span>
+            </th>
+
+            <th (click)="sortAppointments('date')" style="cursor:pointer">
+              Tarih
+              <span [ngClass]="{
+                    'text-dark': sortField === 'date' && sortDirection === 'asc',
+                    'text-muted': sortField !== 'date' || sortDirection !== 'asc'
+                  }">▲</span>
+              <span [ngClass]="{
+                    'text-dark': sortField === 'date' && sortDirection === 'desc',
+                    'text-muted': sortField !== 'date' || sortDirection !== 'desc'
+                  }">▼</span>
+            </th>
+
+            <th (click)="sortAppointments('status')" style="cursor:pointer">
+              Durum
+              <span [ngClass]="{
+                    'text-dark': sortField === 'status' && sortDirection === 'asc',
+                    'text-muted': sortField !== 'status' || sortDirection !== 'asc'
+                  }">▲</span>
+              <span [ngClass]="{
+                    'text-dark': sortField === 'status' && sortDirection === 'desc',
+                    'text-muted': sortField !== 'status' || sortDirection !== 'desc'
+                  }">▼</span>
+            </th>
+
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of filteredAppointments">
+            <td>
+              <span
+                [title]="'Doğum Tarihi: ' + (app.patient.birthDate | date:'shortDate') + ' | Cinsiyet: ' + app.patient.gender">
+                {{ app.patient.firstName }} {{ app.patient.lastName }}
+              </span>
+            </td>
+            <td>{{ app.appointmentDate | date:'short' }}</td>
+            <td>
+              <select class="form-select form-select-sm"
+                      [(ngModel)]="app.status"
+                      (change)="updateAppointmentStatus(app)"
+                      [ngClass]="{
+                        'status-scheduled': app.status === 'Scheduled',
+                        'status-completed': app.status === 'Completed',
+                        'status-canceled': app.status === 'Canceled'
+                      }">
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Canceled">Canceled</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-primary btn-sm me-2" (click)="openAppointmentForm(app)">Güncelle</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteAppointment(app.id)">Sil</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="!showAppointmentForm && filteredAppointments.length === 0">Henüz randevunuz yok veya filtreye uyan randevu bulunamadı.</p>
+    </div>
+
+    <!-- HASTALAR SEKMESI -->
+    <div *ngIf="activeTab === 'patients'">
+      <h4>Hastalar</h4>
+      <table class="table table-striped mt-3" *ngIf="patients.length > 0">
+        <thead>
+          <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Doğum Tarihi</th>
+            <th>Cinsiyet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of patients">
+            <td>{{ p.firstName }}</td>
+            <td>{{ p.lastName }}</td>
+            <td>{{ p.birthDate | date:'shortDate' }}</td>
+            <td>{{ p.gender }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="patients.length === 0">Henüz hasta bulunmamaktadır.</p>
+    </div>
+
+    <!-- MEDICAL RECORD SEKMESİ-->
+    <div *ngIf="activeTab === 'medicalRecords'">
+      <!-- Eğer form veya görüntüleme açık değilse tabloyu göster -->
+      <div *ngIf="!showRecordForm && !showRecordView">
+        <table class="table table-striped mt-3" *ngIf="medicalRecords.length>0">
+          <thead>
+            <tr><th>Hasta</th><th>Tanı</th><th>Reçete</th><th>Tarih</th><th>İşlem</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rec of medicalRecords">
+              <td>{{rec.patient.firstName}} {{rec.patient.lastName}}</td>
+              <td>{{rec.diagnosis}}</td>
+              <td>{{rec.prescription}}</td>
+              <td>{{rec.createdAt | date:'short'}}</td>
+              <td>
+                <button class="btn btn-primary btn-sm me-2" (click)="openRecordForm(rec)">Güncelle</button>
+                <button class="btn btn-info btn-sm" (click)="viewRecord(rec)">Görüntüle</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="medicalRecords.length===0">Henüz kayıt yok.</p>
+      </div>
+
+      <!-- Kayıt ekleme / güncelleme formu -->
+      <app-medical-record-form
+        *ngIf="showRecordForm"
+        [record]="selectedRecord"
+        (saved)="onRecordSaved()"
+        (cancel)="closeRecordForm()">
+      </app-medical-record-form>
+
+      <!-- Kayıt görüntüleme -->
+      <div *ngIf="showRecordView">
+        <button class="btn btn-secondary mb-3" (click)="closeRecordView()">← Kayıtlara Dön</button>
+        <app-medical-record-form
+          [record]="selectedRecord"
+          [viewMode]="true"
+          (cancel)="closeRecordView()">
+        </app-medical-record-form>
+      </div>
+    </div>
+
+
+    <!-- REÇETELER -->
+    <div *ngIf="activeTab === 'prescriptions'">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Reçeteler</h4>
+        <button class="btn btn-success btn-sm" (click)="showPrescriptionForm = !showPrescriptionForm">
+          {{ showPrescriptionForm ? 'Listeye Dön' : '➕ Yeni Reçete' }}
+        </button>
+      </div>
+<!--hahah-->
+      <app-prescription-form *ngIf="showPrescriptionForm" [doctorId]="user.id" (saved)="showPrescriptionForm=false"></app-prescription-form>
+      <app-prescription-list *ngIf="!showPrescriptionForm" [role]="'DOCTOR'" [userId]="user.id"></app-prescription-list>
+    </div>
+
+  </div>
+
+</div>

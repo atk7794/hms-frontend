@@ -1,0 +1,108 @@
+<div class="container mt-4">
+  <h2>🩺 Hasta Paneli</h2>
+
+  <ul class="nav nav-tabs mt-3">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='appointments'" (click)="setTab('appointments')">📅 Randevular</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='medicalRecords'" (click)="setTab('medicalRecords')">🩺 Medical Records</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab==='prescriptions'" (click)="setTab('prescriptions')">💊 Reçeteler</a>
+    </li>
+  </ul>
+
+  <div class="card mt-4 p-3 shadow-sm">
+
+    <!-- appointments -->
+    <div *ngIf="activeTab==='appointments'" class="mt-3">
+      <button class="btn btn-success mb-3" (click)="openForm()">Yeni Randevu Ekle</button>
+      <table class="table table-striped mt-3" *ngIf="appointments.length > 0">
+        <thead>
+          <tr>
+            <th>Doktor</th>
+            <th>İşlem</th>
+            <th>Tarih</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of appointments">
+            <td>{{ app.doctor.firstName }} {{ app.doctor.lastName }}</td>
+            <td>{{ app.doctor.specialty }}</td> <!-- 🔹 Ekledik -->
+            <td>{{ app.appointmentDate | date:'short' }}</td>
+            <td>{{ app.status }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm me-2" (click)="openForm(app)">Güncelle</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteAppointment(app.id)">Sil</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="appointments.length === 0">Henüz randevunuz yok.</p>
+
+      <!-- Form component -->
+      <app-appointment-form
+        *ngIf="showForm"
+        [appointment]="selectedAppointment"
+        (formSubmitted)="onFormSubmitted()"
+        (cancelForm)="closeForm()">
+      </app-appointment-form>
+    </div>
+
+
+    <!-- Medical Records -->
+    <div *ngIf="activeTab==='medicalRecords'" class="mt-3">
+
+      <!-- Eğer kayıt görüntüleme açık değilse tabloyu göster -->
+      <div *ngIf="!showRecordView">
+        <table class="table table-striped" *ngIf="medicalRecords.length > 0">
+          <thead>
+            <tr>
+              <th>Tanı</th>
+              <th>Reçete</th>
+              <th>Tarih</th>
+              <th>Doktor</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rec of medicalRecords">
+              <td>{{ rec.diagnosis }}</td>
+              <td>{{ rec.prescription }}</td>
+              <td>{{ rec.createdAt | date:'short' }}</td>
+              <td>{{ rec.doctor.firstName }} {{ rec.doctor.lastName }}</td>
+              <td>
+                <button class="btn btn-info btn-sm" (click)="viewRecord(rec)">Görüntüle</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p *ngIf="medicalRecords.length === 0">Henüz medical record bulunmamaktadır.</p>
+      </div>
+
+      <!-- Eğer bir kayıt görüntüleniyorsa -->
+      <div *ngIf="showRecordView">
+        <button class="btn btn-secondary mb-3" (click)="closeRecordView()">← Kayıtlara Dön</button>
+
+        <app-medical-record-form
+          [record]="selectedRecord"
+          [viewMode]="true"
+          (cancel)="closeRecordView()">
+        </app-medical-record-form>
+      </div>
+    </div>
+
+
+    <!-- reçeteler -->
+    <div *ngIf="activeTab==='prescriptions'" class="mt-3">
+      <app-prescription-list [role]="'PATIENT'" [userId]="user.id"></app-prescription-list>
+    </div>
+
+  </div>
+
+</div>
