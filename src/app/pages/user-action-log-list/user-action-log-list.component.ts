@@ -42,10 +42,20 @@ export class UserActionLogListComponent implements OnInit, AfterViewInit {
   loadLogs(): void {
     this.loading = true;
     this.logService.getAll().subscribe(res => {
-      this.dataSource.data = res;
+      this.dataSource = new MatTableDataSource<UserActionLog>(res);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
       this.loading = false;
     });
   }
+
+/*  loadLogs(): void {
+      this.loading = true;
+      this.logService.getAll().subscribe(res => {
+        this.dataSource.data = res;
+        this.loading = false;
+      });
+    } */
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
