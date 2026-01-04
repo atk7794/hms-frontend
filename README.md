@@ -129,7 +129,7 @@ export const environment = {
 
 ## 🔗 Deployment
 
-- Frontend: Vercel (planned / in progress)
+- Frontend: Vercel (live)
 - Backend: Render / Docker-based deployment
 - Database: PostgreSQL
 
@@ -146,6 +146,34 @@ This project was developed to demonstrate:
 - Clean Angular project structure
 - Scalable and maintainable frontend design
 - Enterprise-style backend–frontend integration
+
+---
+
+## 🌐 Live Demo
+
+Frontend:  
+👉 https://hms-frontend-zeta-two.vercel.app
+
+Backend:  
+👉 https://hms-backend-0ilj.onrender.com
+
+---
+
+## 🔑 Demo Admin User
+
+> ⚠️ Demo credentials are for showcase purposes only.
+
+Email: admin@hms.com  
+Password: Admin123!
+
+---
+
+## 📧 Email Service Notice
+
+Email-related features (verification, password reset, notifications) are implemented and fully functional at code level.
+
+However, outbound SMTP connections are restricted on the current free cloud environment.  
+The system is designed to support production-ready email providers such as **Resend, Amazon SES, or SendGrid** with minimal configuration changes.
 
 ---
 
